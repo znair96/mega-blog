@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import appWriteService from "../../appwrite/config";
-import { Input, Button, RTE } from "../index";
+import { Input, Button, RTE, Select } from "../index";
 function PostForm({ post }) {
   const { register, control, handleSubmit, getValues, setValue, watch } =
     useForm({
@@ -15,7 +15,7 @@ function PostForm({ post }) {
       },
     });
   const navigate = useNavigate();
-  const userDate = useSelector((state) => state.user.userData);
+  const userData = useSelector((state) => state.auth.userData);
 
   const submit = async (data) => {
     if (post) {
@@ -39,7 +39,7 @@ function PostForm({ post }) {
         data.featuredImage = fileId;
         const dbPost = await appWriteService.createPost({
           ...data,
-          userId: userDate.$id,
+          userId: userData.$id,
         });
         if (dbPost) {
           navigate(`/post/${dbPost.$id}`);
@@ -49,11 +49,7 @@ function PostForm({ post }) {
   };
   const slugTransform = useCallback((value) => {
     if (value && typeof value === "string") {
-      return value
-        .trim()
-        .toLowerCase()
-        .replace(/^[a-zA-Z\d\s]+/g, "-")
-        .replace(/\s/g, "-");
+      return value.trim().toLowerCase().replace(/\s/g, "-");
     }
     return "";
   }, []);
@@ -111,7 +107,7 @@ function PostForm({ post }) {
         {post && (
           <div className="w-full mb-4">
             <img
-              src={appwriteService.getFilePreview(post.featuredImage)}
+              src={appWriteService.getFilePreview(post.featuredImage)}
               alt={post.title}
               className="rounded-lg"
             />
