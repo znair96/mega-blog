@@ -9,7 +9,7 @@ function PostForm({ post }) {
     useForm({
       defaultValues: {
         title: post?.title || "",
-        slug: post?.slug || "",
+        slug: post?.$id || "",
         content: post?.content || "",
         status: post?.status || "active",
       },
@@ -83,6 +83,7 @@ function PostForm({ post }) {
           placeholder="Slug"
           className="mb-4"
           {...register("slug", { required: true })}
+          defaultValue={getValues("slug")}
           onInput={(e) => {
             setValue("slug", slugTransform(e.current.value), {
               shouldValidate: true,
